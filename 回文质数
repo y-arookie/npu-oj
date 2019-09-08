@@ -1,0 +1,197 @@
+回文质数
+
+时限：1000ms 内存限制：10000K 总时限：3000ms
+
+描述：
+
+因为151既是一个质数又是一个回文数(从左到右和从右到左看是一样的)，所以151是回文质数．
+写一个程序来找出范围[a,b](5<=a<b<=100,000,000)间的所有回文质数．
+
+输入：
+
+第一行　两个整数：a和b．
+
+输出：
+
+输出一个回文质数的列表，一行一个．
+
+输入样例：
+
+5 500
+
+输出样例：
+
+5
+7
+11
+101
+131
+151
+181
+191
+313
+353
+373
+383
+
+
+#include <stdio.h>
+#include <math.h>
+int huiwen(long int n)        //判断回文 
+{
+	long int number,y;
+	y=0;
+	number=n;
+	while(number>0)
+	{
+		y=y*10+number%10;
+		number/=10;
+	}
+	if(y==n)
+	return 1;
+	else 
+	return 0;
+}
+int isprime(int num){
+	if(num == 1)return 0;
+	if(num == 2 || num == 3){
+		return 1;
+	}
+	if(num % 6 != 1 && num % 6 != 5){
+		return 0;
+	}
+	for(int i = 5; i*i <= num; i += 6){
+		if(num % i == 0 || num % (i+2) == 0){
+			return 0;
+		}
+	}
+	return 1;
+}
+int main()
+{
+	long int a,b,i;
+	scanf("%ld %ld",&a,&b);
+	i=a;
+	if(a%2==0)
+	{
+	i=a+1;
+	}
+	for(i;i<=b;i=i+2)
+	{
+		if(isprime(i)&&huiwen(i))
+		printf("%ld\n",i);
+	}
+	return 0;
+}
+刚开始的思路，遍历判断回文跟素数，后来发现超时，进行改进：
+不再进行判断回文，而是遍历生成回文数，并且剔除位数为4，6，8位的数的判断
+对于三位以下的回文质数，仅有5 7 11，则不需判断直接进行输出
+
+#include <stdio.h>
+#include <math.h>
+int getlength(int border)   //获取位数 
+{
+	int m,number;
+	m=1,number=border;
+	while(number>9)
+	{
+		m++;
+		number=number/10;	
+	}
+	return m;
+}
+int isprime(int num)             //判断素数 
+{ 
+int q;
+for(q=2;q<=sqrt(num);q++)
+{
+  if(num%q==0)
+  return 0;
+}
+if(q>sqrt(num))
+return 1;
+}
+int main()
+{
+	long a,b;
+	int lenA,lenB;
+	scanf("%d%d",&a,&b);
+	lenA=getlength(a);           //获取位数 
+	lenB=getlength(b);          
+	if(lenA>=1)          //将5 7 11输出 
+			{
+				if(a<=5&&b>=5)
+					{
+						printf("5\n");
+						if(b>=7)
+							{
+								printf("7\n");
+									if(b>=11)
+										{
+											printf("11\n");
+										}
+							}
+					}
+			}
+	if(lenA<=3&&lenB>=3)        //生成三位回文数 
+	{
+		int x,y;
+		int temp; 
+		for(x=1;x<=9;x++)
+		 for(y=0;y<=9;y++)
+			{
+		 		temp=x*100+y*10+x;
+		
+		if(temp>=a&&temp<=b)
+			{
+				if(isprime(temp))
+				{
+					printf("%d\n",temp);
+				}
+			}
+			}
+	}		
+	if(lenA<=5&&lenB>=5)        //生成五位回文数 
+	{
+		int x,y,z;
+		int temp; 
+		for(x=1;x<=9;x++)
+		 for(y=0;y<=9;y++)
+		 	for(z=0;z<=9;z++)
+		{
+		 		temp=x*10000+y*1000+z*100+y*10+x;
+		
+		if(temp>=a&&temp<=b)
+			{
+				if(isprime(temp))
+				{
+					printf("%d\n",temp);
+				}
+			}
+		}
+	}
+	if(lenA<=7&&lenB>=7)        //生成七位回文数 
+	{
+		int x,y,z,t;
+		int temp; 
+		for(x=1;x<=9;x++)
+		 for(y=0;y<=9;y++)
+		 	for(z=0;z<=9;z++)
+		 		for(t=0;t<=9;t++)
+		{
+		 		temp=x*1000000+y*100000+z*10000+t*1000+z*100+y*10+x;
+			
+		if(temp>=a&&temp<=b)
+			{
+				if(isprime(temp))
+				{
+					printf("%d\n",temp);
+				}
+			}
+		}
+	}								
+	return 0;
+}
+
+
+
